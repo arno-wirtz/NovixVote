@@ -1,0 +1,34 @@
+/* Universal website design tokens v1.1 — no violet/purple */
+:root {
+  color-scheme: light;
+  --font-display: "Manrope Variable", "Manrope", "Aptos Display", sans-serif;
+  --font-body: "Inter Variable", "Inter", "Aptos", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --brand-blue: #1D70C9; --brand-green: #0BDA51; --brand-red: #E73513;
+  --tint-blue: #EAF4FF; --tint-green: #E9FBEF; --tint-red: #FFF0EC;
+  --color-page: #F6F8FB; --color-surface: #FFFFFF; --color-surface-raised: #FFFFFF;
+  --color-text-primary: #17212B; --color-text-secondary: #526170; --color-text-muted: #667584;
+  --color-border: #DCE3EA; --color-divider: #E8EDF2;
+  --color-primary: #1D70C9; --color-primary-hover: #175BA5; --color-primary-text: #FFFFFF;
+  --color-focus: #1D70C9; --color-success: #08652D; --color-success-accent: #0BDA51;
+  --color-success-surface: #E9FBEF; --color-danger: #A52310; --color-danger-accent: #E73513;
+  --color-danger-surface: #FFF0EC; --color-info: #145A9E; --color-info-surface: #EAF4FF;
+  --color-disabled-surface: #E9EDF1; --color-disabled-text: #8A96A3;
+  --content-max: 1120px; --reading-max: 780px; --gutter: clamp(20px, 4vw, 48px);
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  --shadow-card: 0 2px 8px rgb(15 30 45 / 6%); --shadow-overlay: 0 16px 48px rgb(0 0 0 / 18%);
+  --motion-fast: 120ms; --motion-standard: 180ms; --motion-emphasis: 240ms; --motion-page: 280ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark; --color-page: #0B1118; --color-surface: #121C27; --color-surface-raised: #182433;
+  --color-text-primary: #F2F6FA; --color-text-secondary: #B5C1CD; --color-text-muted: #93A3B3;
+  --color-border: #2A3949; --color-divider: #233141; --color-primary: #56A5FF;
+  --color-primary-hover: #78B8FF; --color-primary-text: #081522; --color-focus: #78B8FF;
+  --color-success: #79F0A1; --color-success-accent: #0BDA51; --color-success-surface: #102B20;
+  --color-danger: #FF9A89; --color-danger-accent: #FF654A; --color-danger-surface: #351A18;
+  --color-info: #8CC5FF; --color-info-surface: #122A42; --color-disabled-surface: #202B36;
+  --color-disabled-text: #748292; --shadow-card: 0 2px 10px rgb(0 0 0 / 22%);
+  --shadow-overlay: 0 18px 54px rgb(0 0 0 / 45%);
+}
+* { box-sizing: border-box; }
