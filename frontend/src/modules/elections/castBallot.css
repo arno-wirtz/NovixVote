@@ -1,0 +1,10 @@
+/* Voting UI. Semantic tokens only (no hard-coded colours). */
+.cast-ballot .choice-group { margin-bottom: 1rem; }
+.review-list { margin: 0 0 1rem; padding-left: 1.25rem; }
+.review-list li { padding: 2px 0; }
+.receipt-box { display: block; padding: 12px 14px; border: 1px dashed var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-raised);
+  overflow-wrap: anywhere; font-family: var(--font-mono); font-size: .9rem; margin: .5rem 0 1rem; user-select: all; }
+.receipt-check { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--color-divider); }
+.receipt-check .row-actions { align-items: flex-end; flex-wrap: wrap; }
+.receipt-check .field { margin: 0; flex: 1 1 260px; }
+.cast-ballot .ballot-option:has(input:checked) { border-color: var(--color-primary); background: var(--color-info-surface); }
