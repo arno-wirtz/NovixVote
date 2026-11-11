@@ -33,3 +33,25 @@ export interface MyElection { id: string; organisation_name: string; title: stri
 export interface VoteReceipt { receipt: string; changed: boolean }
 export interface MyVote { voted: boolean; can_change: boolean; selections: string[] | null }
 export interface Turnout { voted: number; eligible: number | null }
+
+// ---- results and audit (phase 6) ----
+export interface CountResult {
+  method: string; category: string; ballot_type: string; seats: number; candidates: string[];
+  tallies: Record<string, number>; winners: string[]; allocations: Record<string, number>; below_threshold: string[];
+  valid_ballots: number; blank_ballots: number; invalid_ballots: number; invalid_reasons: Record<string, number>;
+  allocation_log: { seat: number; list: string; votes: number; divisor: number; quotient: string }[];
+  rounds: { round: number; tallies: Record<string, number>; exhausted: number; active: number; eliminated: string[]; winner: string | null; tie_resolution: string | null }[];
+  tied_for_last_seat: string[]; unallocated_seats: number; tie_resolution: Record<string, unknown> | null; complete: boolean;
+}
+export interface TieBreakInput { method: "lots" | "agreed_order" | "other"; note: string; order: string[] }
+export interface TieBreakRecord extends TieBreakInput { [key: string]: unknown }
+export interface TallyRun {
+  id: string; run_number: number; created_at: string; input_hash: string; ballot_count: number;
+  tie_break: TieBreakRecord | null; result: CountResult; approved: boolean; approved_at: string | null;
+}
+export interface PublishedResult {
+  ballot_count: number; run_number: number | null; approved_at: string | null; input_hash: string | null;
+  tie_break: TieBreakRecord | null; result: CountResult | null;
+}
+export interface AuditEvent { id: number; event_type: string; entity_type: string | null; entity_id: string | null; actor_id: string | null; metadata: Record<string, unknown>; created_at: string; hash: string }
+export interface AuditVerify { ok: boolean; checked: number; first_bad_id: number | null }

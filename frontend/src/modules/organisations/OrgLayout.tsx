@@ -24,13 +24,15 @@ export function OrgLayout() {
   if (error) return <Alert tone="danger">{error}</Alert>;
   if (!state) return <p className="muted" role="status">Loading…</p>;
   const ctx: OrgContext = { orgId, orgName: state.name, membership: state.membership, can: (p) => state.membership.permissions.includes(p) };
+  const tab = ({ isActive }: { isActive: boolean }) => `tab ${isActive ? "is-active" : ""}`;
   return (
     <>
       <p className="breadcrumb muted small">Workspace · {ROLE_LABEL[state.membership.role]}</p>
       <h1>{state.name}</h1>
       <nav className="tabs" aria-label="Workspace sections">
-        <NavLink to={`/workspaces/${orgId}/elections`} className={({ isActive }) => `tab ${isActive ? "is-active" : ""}`}>Elections</NavLink>
-        <NavLink to={`/workspaces/${orgId}/members`} className={({ isActive }) => `tab ${isActive ? "is-active" : ""}`}>Members</NavLink>
+        <NavLink to={`/workspaces/${orgId}/elections`} className={tab}>Elections</NavLink>
+        <NavLink to={`/workspaces/${orgId}/members`} className={tab}>Members</NavLink>
+        {ctx.can("audit.read") && <NavLink to={`/workspaces/${orgId}/audit`} className={tab}>Audit</NavLink>}
       </nav>
       <Outlet context={ctx} />
     </>

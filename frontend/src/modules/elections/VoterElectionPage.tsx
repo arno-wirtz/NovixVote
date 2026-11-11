@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Alert, Card, StatusBadge } from "../../components/ui/ui";
 import { ApiError } from "../../services/api";
-import type { BallotOption, Election, VotingMethod } from "../../types/api";
+import type { BallotOption, Election, PublishedResult, VotingMethod } from "../../types/api";
 import { BallotPreview } from "./BallotPreview";
 import { CastBallot } from "./CastBallot";
+import { ResultView } from "./ResultView";
 import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "./lifecycle";
 
 /** What an eligible voter (workspace member or not) sees when they open an election link. */
@@ -16,6 +17,7 @@ export function VoterElectionPage() {
   const [options, setOptions] = useState<BallotOption[]>([]);
   const [method, setMethod] = useState<VotingMethod | undefined>();
   const [eligible, setEligible] = useState<boolean | null>(null);
+  const [published, setPublished] = useState<PublishedResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,6 +25,7 @@ export function VoterElectionPage() {
       setElection(e);
       const [ballot, methods, elig] = await Promise.all([api.ballot(electionId), api.votingMethods(), api.eligibility(electionId)]);
       setOptions(ballot); setMethod(methods.find((m) => m.key === e.voting_method)); setEligible(elig.eligible);
+      if (e.status === "published") setPublished(await api.results(electionId).catch(() => null));
     }).catch((e) => setError(e instanceof ApiError && e.status === 404 ? "This election doesn't exist, or you don't have access to it." : "Couldn't load the election"));
   }, [api, electionId]);
 
@@ -33,7 +36,7 @@ export function VoterElectionPage() {
     scheduled: `Voting opens ${formatDateTime(election.opens_at)}.`,
     open: `Voting is open until ${formatDateTime(election.closes_at)}.`,
     closed: "Voting has closed.",
-    published: "Voting has closed and the election has been approved. Results will be shown here in a later version.",
+    published: "Voting has closed and the approved results are below.",
     draft: "This election is still being prepared.",
   }[election.status];
   const canVote = election.status === "open" && eligible === true;
@@ -50,6 +53,12 @@ export function VoterElectionPage() {
           <dt>Blank ballots</dt><dd>{election.allow_blank_ballot ? "Allowed" : "Not allowed: you must select at least one option"}</dd>
           <dt>Changing your vote</dt><dd>{election.allow_vote_change ? "Allowed until voting closes" : "Not allowed after you submit"}</dd></dl>
       </Card>
+      {published && (
+        <Card title="Results">
+          {published.result ? <ResultView result={published.result} tieBreak={published.tie_break} /> : <p className="muted">No ballots were cast in this election.</p>}
+          {published.result && <p className="muted small">Based on {published.ballot_count} ballots. Counts only: individual votes are not recorded against anyone.</p>}
+        </Card>
+      )}
       {canVote
         ? <Card title="Your ballot"><CastBallot election={election} options={options} method={method} /></Card>
         : <Card title="Ballot"><BallotPreview options={options} method={method} seats={election.seats} /></Card>}

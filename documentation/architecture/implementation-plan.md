@@ -6,7 +6,8 @@
 | 3 ✅ Ballot builder | Candidates and lists, voter lists (CSV import), restricted vs public eligibility, ballot-ready gate on scheduling | SQL, API, full-stack and unit tests green |
 | 4 ✅ Voting engine | Instant-runoff (majority/runoff, one winner) with round log and tie handling | Deterministic, documented algorithms; property tests |
 | 5 ✅ Secure voting | Casting votes with election-level rules (selection required / blank allowed; vote changes allowed / not), identity/ballot separation, duplicate prevention, inclusion receipts, turnout (ADR-0005) | SQL + API tests green; independent security review still required before binding elections |
-| 6 Results & audit | Wire counting to stored ballots, tie-break recording, approval flow, exports, audit viewer, signed checkpoints, ballot encryption at rest; optional: two-round runoff, largest remainder, STV | Reproducible counts |
+| 6 ✅ Results & audit | Counting wired to stored ballots, tie-break recording, count approval gating publication, results display, audit viewer with chain verification (ADR-0006) | SQL + API + unit tests; recounts reproduce |
+| 6b Hardening (next) | Signed audit checkpoints with external anchoring, ballot encryption at rest, results export, optional two-round runoff / largest remainder / STV | Key custody decided; independent review |
 | 7 Notifications & admin | Email notifications, rate limiting, platform administration | |
 | 8 Staging & release | E2E tests, backup/restore drill, load test, accessibility audit, production release | Sign-off |
 

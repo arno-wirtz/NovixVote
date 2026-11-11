@@ -1,6 +1,6 @@
 # NovixVote — Voting made simple
 
-Secure, configurable, multi-tenant voting platform. **Phases 1-5 are complete: foundation, members and election lifecycle, ballot builder with voter lists and eligibility, four counting methods (plurality, D'Hondt, Sainte-Laguë, instant-runoff), and secure voting.**
+Secure, configurable, multi-tenant voting platform. **Phases 1-6 are complete: foundation, members and election lifecycle, ballot builder with voter lists and eligibility, four counting methods (plurality, D'Hondt, Sainte-Laguë, instant-runoff), secure voting, and counting with approval, results and audit verification.**
 
 | Layer | Tech | Folder |
 |---|---|---|
@@ -21,12 +21,14 @@ Secure, configurable, multi-tenant voting platform. **Phases 1-5 are complete: f
   - *Voters can change their vote while voting is open* (default on). Turn off for one final vote.
   Voters get a receipt that proves inclusion without revealing their choice, can check it, and (when allowed) can review and change their vote until voting closes. Managers see aggregate turnout only. See `documentation/architecture/adr-0005-secure-voting.md` for the secrecy trade-off of vote changes.
 
-Not built yet (deliberately): counting wired to stored ballots, tie-break recording, results display and approval (phase 6), ballot encryption at rest, rate limiting, notifications/emails, two-round runoff.
+- **Results (phase 6):** after voting closes, a manager counts the ballots with the election's method. Ties are never broken silently: the documented tie-break (procedure, who/how, order) is recorded and the votes counted again. Every count is kept. An owner approves the latest complete count, and only then can an election with ballots be published; eligible voters then see the approved result (IRV rounds and seat allocations included). The Audit tab lists workspace events and verifies the hash chain. See `documentation/architecture/adr-0006-counting-and-results.md`.
+
+Not built yet (deliberately): signed audit checkpoints and external anchoring, ballot encryption at rest, results export, rate limiting, notifications/emails, two-round runoff.
 
 ## Run locally
 Prerequisites: Node 20+, Python 3.11+, a Supabase project (or `supabase start` locally).
 
-1. **Database** — apply `database/migrations/0001_…` to `0006_…` in order (SQL editor, `psql`, or copy to `supabase/migrations/` and `supabase db push`).
+1. **Database** — apply `database/migrations/0001_…` to `0007_…` in order (SQL editor, `psql`, or copy to `supabase/migrations/` and `supabase db push`).
 2. **Backend**
    ```bash
    cd backend && python -m venv .venv && source .venv/bin/activate
@@ -44,7 +46,7 @@ Prerequisites: Node 20+, Python 3.11+, a Supabase project (or `supabase start` l
 
 ## Tests
 ```bash
-cd backend && pytest                      # API, auth, config, voting engine, voting API
+cd backend && pytest                      # API, auth, config, voting engine, voting and results APIs
 cd frontend && npm test && npm run build  # unit tests, typecheck, production build
 # Database + full-stack tests need a scratch PostgreSQL (and PostgREST for the last one): see database/tests/README.md
 ```

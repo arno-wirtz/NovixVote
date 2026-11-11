@@ -10,7 +10,9 @@ import { VoterElectionPage } from "../modules/elections/VoterElectionPage";
 import { VotersPage } from "../modules/elections/VotersPage";
 import { ElectionFormPage } from "../modules/elections/ElectionFormPage";
 import { ElectionsPage } from "../modules/elections/ElectionsPage";
+import { ResultsPage } from "../modules/elections/ResultsPage";
 import { MembersPage } from "../modules/members/MembersPage";
+import { AuditPage } from "../modules/organisations/AuditPage";
 import { OrgLayout } from "../modules/organisations/OrgLayout";
 import { WorkspacesPage } from "../modules/organisations/WorkspacesPage";
 
@@ -31,8 +33,10 @@ export function App() {
             <Route index element={<ElectionOverviewPage />} />
             <Route path="ballot" element={<BallotPage />} />
             <Route path="voters" element={<VotersPage />} />
+            <Route path="results" element={<ResultsPage />} />
           </Route>
           <Route path="members" element={<MembersPage />} />
+          <Route path="audit" element={<AuditPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

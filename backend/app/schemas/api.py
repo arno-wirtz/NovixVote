@@ -293,3 +293,58 @@ class ReceiptCheckIn(BaseModel):
 
 class ReceiptCheckOut(BaseModel):
     included: bool
+
+
+# ---------------- phase 6: counting, results, audit ----------------
+from typing import Any  # noqa: E402
+
+
+class TieBreakIn(BaseModel):
+    """A documented tie-break. `order` lists the tied candidates, most favoured first (e.g. the order lots were drawn in)."""
+    model_config = ConfigDict(extra="forbid")
+    method: Literal["lots", "agreed_order", "other"]
+    note: str = Field(min_length=3, max_length=500)      # who decided and how: stored with the count and shown with the result
+    order: list[str] = Field(min_length=1, max_length=200)
+
+
+class TallyRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    tie_break: TieBreakIn | None = None
+
+
+class TallyRunOut(BaseModel):
+    id: UUID
+    run_number: int
+    created_at: datetime
+    input_hash: str
+    ballot_count: int
+    tie_break: dict[str, Any] | None = None
+    result: dict[str, Any]
+    approved: bool = False
+    approved_at: datetime | None = None
+
+
+class PublishedResultOut(BaseModel):
+    ballot_count: int
+    run_number: int | None = None
+    approved_at: datetime | None = None
+    input_hash: str | None = None
+    tie_break: dict[str, Any] | None = None
+    result: dict[str, Any] | None = None      # None when the election was published with no ballots cast
+
+
+class AuditEventOut(BaseModel):
+    id: int
+    event_type: str
+    entity_type: str | None = None
+    entity_id: str | None = None
+    actor_id: UUID | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    created_at: datetime
+    hash: str
+
+
+class AuditVerifyOut(BaseModel):
+    ok: bool
+    checked: int
+    first_bad_id: int | None = None

@@ -106,7 +106,7 @@ export function ElectionOverviewPage() {
           )}
         </div>
         {election.status === "closed" && perms.includes("results.approve") && (
-          <p className="muted small">Vote counting and results arrive in a later phase. Publishing now records your approval of the closed election.</p>
+          <p className="muted small">Count the votes and approve the count on the Results tab. An election with ballots can only be published after its count is approved.</p>
         )}
       </Card>
 

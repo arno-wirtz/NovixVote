@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { Link, NavLink, Outlet, useOutletContext, useParams } from "react-router-dom";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Alert, StatusBadge } from "../../components/ui/ui";
 import { ApiError } from "../../services/api";
@@ -7,8 +7,6 @@ import type { Election, VotingMethod } from "../../types/api";
 import type { OrgContext } from "../organisations/OrgLayout";
 import { useOrgContext } from "../organisations/useOrgContext";
 import { STATUS_LABEL, STATUS_TONE } from "./lifecycle";
-import { Link } from "react-router-dom";
-import { useOutletContext } from "react-router-dom";
 
 export interface ElectionContext extends OrgContext { election: Election; setElection: (e: Election) => void; method: VotingMethod | undefined; reload: () => Promise<void> }
 export const useElectionContext = () => useOutletContext<ElectionContext>();
@@ -38,6 +36,7 @@ export function ElectionLayout() {
 
   const base = `/workspaces/${org.orgId}/elections/${election.id}`;
   const showVoters = org.can("election.manage") && election.access === "restricted";
+  const showResults = org.can("results.view") && (election.status === "closed" || election.status === "published");
   const ctx: ElectionContext = { ...org, election, setElection, method: methods.find((m) => m.key === election.voting_method), reload };
   const tab = ({ isActive }: { isActive: boolean }) => `tab ${isActive ? "is-active" : ""}`;
   return (
@@ -48,6 +47,7 @@ export function ElectionLayout() {
         <NavLink end to={base} className={tab}>Overview</NavLink>
         <NavLink to={`${base}/ballot`} className={tab}>Ballot</NavLink>
         {showVoters && <NavLink to={`${base}/voters`} className={tab}>Voters</NavLink>}
+        {showResults && <NavLink to={`${base}/results`} className={tab}>Results</NavLink>}
       </nav>
       <Outlet context={ctx} />
     </>

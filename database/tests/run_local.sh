@@ -7,7 +7,7 @@ DB="novixvote_test_$$"
 psql "$PGURL" -qc "create database $DB"
 trap 'psql "$PGURL" -qc "drop database $DB" || true' EXIT
 URL="${PGURL%/*}/$DB"
-for f in supabase_stub.sql ../migrations/0001_foundation.sql ../migrations/0002_members_invitations.sql ../migrations/0003_elections.sql ../migrations/0004_ballot_voters.sql ../migrations/0005_instant_runoff.sql ../migrations/0006_voting.sql \
-         rls_isolation.sql rls_members_invitations.sql rls_elections.sql rls_ballot_voters.sql rls_instant_runoff.sql rls_voting.sql; do
+for f in supabase_stub.sql ../migrations/0001_foundation.sql ../migrations/0002_members_invitations.sql ../migrations/0003_elections.sql ../migrations/0004_ballot_voters.sql ../migrations/0005_instant_runoff.sql ../migrations/0006_voting.sql ../migrations/0007_results.sql \
+         rls_isolation.sql rls_members_invitations.sql rls_elections.sql rls_ballot_voters.sql rls_instant_runoff.sql rls_voting.sql rls_results.sql; do
   echo "== $f"; psql "$URL" -v ON_ERROR_STOP=1 -q -f "$f"
 done

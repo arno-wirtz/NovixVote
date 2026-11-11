@@ -1,5 +1,5 @@
 import { env } from "../app/configuration/env";
-import type { BallotOption, BallotOptionInput, Election, ElectionInput, ElectionStatus, Health, Invitation, Member, Membership, MyElection, MyInvitation, MyVote, OrgRole, Organisation, ReadinessItem, Turnout, VoteReceipt, VoterPage, VoterRow, VotersResult, VotingMethod } from "../types/api";
+import type { AuditEvent, AuditVerify, BallotOption, BallotOptionInput, Election, ElectionInput, ElectionStatus, Health, Invitation, Member, Membership, MyElection, MyInvitation, MyVote, OrgRole, Organisation, PublishedResult, ReadinessItem, TallyRun, TieBreakInput, Turnout, VoteReceipt, VoterPage, VoterRow, VotersResult, VotingMethod } from "../types/api";
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
@@ -83,6 +83,18 @@ export function createApi(getToken: TokenProvider, fetchImpl: typeof fetch = fet
     turnout: (election: string) => request<Turnout>(`/elections/${election}/turnout`),
     verifyReceipt: (election: string, receipt: string) =>
       request<{ included: boolean }>(`/elections/${election}/receipt/verify`, { method: "POST", body: JSON.stringify({ receipt }) }),
+    // counting and results (phase 6)
+    runTally: (election: string, tieBreak?: TieBreakInput) =>
+      request<TallyRun>(`/elections/${election}/tally`, { method: "POST", body: JSON.stringify(tieBreak ? { tie_break: tieBreak } : {}) }),
+    tallyRuns: (election: string) => request<TallyRun[]>(`/elections/${election}/tally-runs`),
+    approveRun: (run: string) => request<void>(`/tally-runs/${run}/approve`, { method: "POST" }),
+    results: (election: string) => request<PublishedResult>(`/elections/${election}/results`),
+    auditEvents: (org: string, params: { limit: number; before?: number }) => {
+      const q = new URLSearchParams({ limit: String(params.limit) });
+      if (params.before) q.set("before", String(params.before));
+      return request<AuditEvent[]>(`/organisations/${org}/audit?${q}`);
+    },
+    verifyAudit: (org: string) => request<AuditVerify>(`/organisations/${org}/audit/verify`),
   };
 }
 export type Api = ReturnType<typeof createApi>;
